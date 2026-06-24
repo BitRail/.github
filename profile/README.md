@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🧠 The Stacks AI
+# The Stacks AI
 
 ### **Talk to Bitcoin. Trade, lend, stack — through conversation.**
 
@@ -21,7 +21,7 @@ We've built the first comprehensive AI interface for Bitcoin DeFi on Stacks Laye
 
 ---
 
-## 🎯 What We're Building
+## What We're Building
 
 **The Stacks AI** is transforming how people interact with Bitcoin DeFi. Instead of navigating complex interfaces, users simply describe what they want to do. Our AI understands Bitcoin DeFi terminology and executes operations across multiple protocols through a single conversational interface.
 
@@ -30,45 +30,45 @@ User: "Swap 100 STX for ALEX on ALEX Protocol"
 AI: Executes multi-hop routing, finds best price, returns unsigned transaction
 ```
 
-### **Three Core Products**
+### Three Core Products
 
 | Product | Description | Status |
 |---------|-------------|--------|
-| **🤖 Stacks AI Chat** | Natural language interface for Bitcoin DeFi | ✅ Live |
-| **🔌 MCP Server** | 144+ tools across 7 DeFi protocols | ✅ Production |
-| **💰 stackai-x402** | HTTP 402 payments for AI agent tool calls | ✅ Live |
+| **Stacks AI Chat** | Natural language interface for Bitcoin DeFi | Live |
+| **MCP Server** | 144+ tools across 7 DeFi protocols | Production |
+| **stackai-x402** | HTTP 402 payments for AI agent tool calls | Live |
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 <div align="center">
 
 ```mermaid
 graph TB
     subgraph "User Interface"
-        A[💬 Chat Interface]
-        B[🔐 Wallet Connection]
+        A[Chat Interface]
+        B[Wallet Connection]
     end
 
     subgraph "AI Layer"
-        C[🧠 AI Agent Processing]
-        D[📡 MCP Protocol]
+        C[AI Agent Processing]
+        D[MCP Protocol]
     end
 
     subgraph "Payment Layer"
-        E[💳 x402 Gateway]
-        F[🔒 Payment Verification]
+        E[x402 Gateway]
+        F[Payment Verification]
     end
 
     subgraph "Protocol Layer"
-        G[🔧 144+ DeFi Tools]
-        H[⚡ Smart Contracts]
+        G[144+ DeFi Tools]
+        H[Smart Contracts]
     end
 
     subgraph "Blockchain"
-        I[₿ Stacks Network]
-        J[🔶 Bitcoin Security]
+        I[Stacks Network]
+        J[Bitcoin Security]
     end
 
     A --> C
@@ -92,9 +92,9 @@ graph TB
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
-### **🌐 Comprehensive Protocol Coverage**
+### Comprehensive Protocol Coverage
 
 Access 7 major Bitcoin DeFi protocols through a unified interface:
 
@@ -106,19 +106,19 @@ Access 7 major Bitcoin DeFi protocols through a unified interface:
 - **Granite Finance** — Multi-collateral lending with sBTC (21 tools)
 - **Stacks Core** — Contracts, PoX stacking, tokens, NFTs (40+ tools)
 
-### **💡 Natural Language DeFi**
+### Natural Language DeFi
 
 Transform conversational commands into blockchain operations:
 
 ```
-✨ "Stack 10,000 STX for Bitcoin rewards"
-✨ "Borrow 1000 USDA using STX as collateral"
-✨ "Show me all liquidity pools on Velar"
-✨ "What's my vault health factor on Arkadiko?"
-✨ "Generate a SIP-010 token contract called MyToken"
+"Stack 10,000 STX for Bitcoin rewards"
+"Borrow 1000 USDA using STX as collateral"
+"Show me all liquidity pools on Velar"
+"What's my vault health factor on Arkadiko?"
+"Generate a SIP-010 token contract called MyToken"
 ```
 
-### **💰 HTTP 402 Payments**
+### HTTP 402 Payments
 
 Monetize AI tools with zero intermediaries:
 
@@ -128,19 +128,19 @@ Monetize AI tools with zero intermediaries:
 - **Automatic retry** — transparent 402 payment handling
 - **No subscriptions** — pay only for what you use
 
-### **🔒 Security First**
+### Security First
 
-- ✅ Client-side wallet integration with Stacks Connect
-- ✅ No private key storage on servers
-- ✅ User confirmation required for all write operations
-- ✅ Network isolation (mainnet/testnet/devnet)
-- ✅ Transaction status tracking and confirmation
+- Client-side wallet integration with Stacks Connect
+- No private key storage on servers
+- User confirmation required for all write operations
+- Network isolation (mainnet/testnet/devnet)
+- Transaction status tracking and confirmation
 
 ---
 
-## 📦 Repositories
+## Repositories
 
-### **Core Infrastructure**
+### Core Infrastructure
 
 | Repository | Description | Tech Stack |
 |------------|-------------|------------|
@@ -148,7 +148,7 @@ Monetize AI tools with zero intermediaries:
 | [**stacks-mcp-server**](https://github.com/TheStacksAI/stacks-mcp-server) | MCP server with 144+ DeFi tools | Node.js, TypeScript, Stacks.js, MCP Protocol |
 | [**stackai-x402**](https://github.com/TheStacksAI/stackai-x402) | HTTP 402 payment gateway & SDK | TypeScript, Redis, Turbo monorepo |
 
-### **Sub-Projects**
+### Sub-Projects
 
 - **Gateway** — HTTP 402 payment proxy with auth & analytics
 - **SDK** — Client library for x402 payment handling
@@ -159,13 +159,13 @@ Monetize AI tools with zero intermediaries:
 
 ---
 
-## 🎨 Use Cases
+## Use Cases
 
 <table>
 <tr>
 <td width="50%">
 
-### **🏦 For DeFi Users**
+### For DeFi Users
 - Trade across multiple DEXs with natural language
 - Manage lending positions conversationally
 - Stack STX for Bitcoin yields via chat
@@ -175,7 +175,7 @@ Monetize AI tools with zero intermediaries:
 </td>
 <td width="50%">
 
-### **🤖 For AI Developers**
+### For AI Developers
 - Integrate Bitcoin DeFi into AI agents
 - Monetize MCP tools with HTTP 402
 - Access 144+ production-ready tools
@@ -188,7 +188,7 @@ Monetize AI tools with zero intermediaries:
 
 ---
 
-## 🌟 Why Stacks AI?
+## Why Stacks AI?
 
 | Feature | Traditional DeFi | Stacks AI |
 |---------|------------------|-----------|
@@ -201,7 +201,7 @@ Monetize AI tools with zero intermediaries:
 
 ---
 
-## 📊 Statistics
+## Statistics
 
 <div align="center">
 
@@ -220,15 +220,15 @@ Monetize AI tools with zero intermediaries:
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
-### **For Users**
+### For Users
 
 1. **Visit** [x402.stacks-ai.app](https://x402.stacks-ai.app)
 2. **Connect** your Stacks wallet (Leather or Xverse)
 3. **Start chatting** with Bitcoin DeFi
 
-### **For Developers**
+### For Developers
 
 ```bash
 # Install SDK
@@ -248,7 +248,7 @@ const response = await client.post('https://gateway.stacks-ai.app/mcp', {
 })
 ```
 
-### **For Tool Providers**
+### For Tool Providers
 
 ```typescript
 import { createAgent } from 'stackai-x402'
@@ -265,7 +265,7 @@ const agent = await createAgent('https://gateway.stacks-ai.app', privateKey, {
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 <div align="center">
 
@@ -284,7 +284,7 @@ const agent = await createAgent('https://gateway.stacks-ai.app', privateKey, {
 
 ---
 
-## 🌍 Live Services
+## Live Services
 
 | Service | URL | Description |
 |---------|-----|-------------|
@@ -296,32 +296,32 @@ const agent = await createAgent('https://gateway.stacks-ai.app', privateKey, {
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions from the community! Whether you're:
 
-- 🐛 Reporting bugs
-- 💡 Suggesting features
-- 📝 Improving documentation
-- 🔧 Submitting code
-- 🧪 Writing tests
+- Reporting bugs
+- Suggesting features
+- Improving documentation
+- Submitting code
+- Writing tests
 
 Check out our repositories and open an issue or PR. All contributions require:
 
-- ✅ Tests passing
-- ✅ TypeScript type safety
-- ✅ Documentation updates
-- ✅ Code review approval
+- Tests passing
+- TypeScript type safety
+- Documentation updates
+- Code review approval
 
 ---
 
-## 📚 Resources
+## Resources
 
 <table>
 <tr>
 <td>
 
-### **📖 Documentation**
+### Documentation
 - [Getting Started Guide](https://x402-docs.stacks-ai.app)
 - [MCP Server Docs](https://github.com/TheStacksAI/stacks-mcp-server#readme)
 - [x402 SDK Reference](https://github.com/TheStacksAI/stackai-x402#readme)
@@ -330,7 +330,7 @@ Check out our repositories and open an issue or PR. All contributions require:
 </td>
 <td>
 
-### **🔗 Links**
+### Links
 - [Stacks Blockchain](https://www.stacks.co/)
 - [Model Context Protocol](https://modelcontextprotocol.io/)
 - [Bitcoin](https://bitcoin.org/)
@@ -342,29 +342,29 @@ Check out our repositories and open an issue or PR. All contributions require:
 
 ---
 
-## 🎯 Roadmap
+## Roadmap
 
-- ✅ **Q2 2025** — MCP Server v1.0 with 144+ tools
-- ✅ **Q3 2025** — stackai-x402 payment protocol
-- ✅ **Q4 2025** — Chat interface & wallet integration
-- 🚧 **Q1 2026** — Advanced agent marketplace
-- 🚧 **Q2 2026** — Cross-chain protocol expansion
-- 🚧 **Q3 2026** — Mobile applications (iOS/Android)
-- 🚧 **Q4 2026** — Enterprise API & white-label solutions
+- **Q2 2025** — MCP Server v1.0 with 144+ tools
+- **Q3 2025** — stackai-x402 payment protocol
+- **Q4 2025** — Chat interface & wallet integration
+- **Q1 2026** — Advanced agent marketplace
+- **Q2 2026** — Cross-chain protocol expansion
+- **Q3 2026** — Mobile applications (iOS/Android)
+- **Q4 2026** — Enterprise API & white-label solutions
 
 ---
 
-## 📄 License
+## License
 
 All projects are open source under the **MIT License**. See individual repository LICENSE files for details.
 
 ---
 
-## 💬 Community & Support
+## Community & Support
 
 <div align="center">
 
-### **Join the conversation**
+### Join the conversation
 
 [![Twitter](https://img.shields.io/badge/Twitter-Follow-1DA1F2?style=for-the-badge&logo=twitter)](https://twitter.com/TheStacksAI)
 [![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=for-the-badge&logo=discord)](https://discord.gg/stacksai)
@@ -374,7 +374,7 @@ All projects are open source under the **MIT License**. See individual repositor
 
 ---
 
-### **Built with ❤️ by the Stacks AI team**
+### Built by the Stacks AI team
 
 *Making Bitcoin DeFi accessible to everyone, one conversation at a time.*
 
