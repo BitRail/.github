@@ -1,381 +1,241 @@
 <div align="center">
 
-# The Stacks AI
+<br />
 
-### **Talk to Bitcoin. Trade, lend, stack — through conversation.**
+# Bitrail
 
-[![Stacks](https://img.shields.io/badge/Built%20on-Stacks%20L2-orange?style=for-the-badge&logo=bitcoin)](https://www.stacks.co/)
-[![MCP](https://img.shields.io/badge/Protocol-MCP%20Compliant-purple?style=for-the-badge)](https://modelcontextprotocol.io/)
-[![Tools](https://img.shields.io/badge/Tools-144+-green?style=for-the-badge)](#)
-[![x402](https://img.shields.io/badge/Payments-HTTP%20402-blue?style=for-the-badge)](#)
+### Risk rails for productive Bitcoin on Stacks.
 
----
+[![Built on Stacks](https://img.shields.io/badge/Built%20on-Stacks%20L2-orange?style=for-the-badge&logo=bitcoin)](https://www.stacks.co/)
+[![sBTC](https://img.shields.io/badge/Asset-sBTC%20%2F%20stBTC-f7931a?style=for-the-badge)](https://stacks.co/sbtc)
+[![Protocols](https://img.shields.io/badge/Protocols-Zest%20%2B%20StackingDAO-blueviolet?style=for-the-badge)](#integrations)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-**Making Bitcoin DeFi as simple as conversation.**
+<br />
 
-We've built the first comprehensive AI interface for Bitcoin DeFi on Stacks Layer 2, bringing natural language access to lending, trading, staking, and governance across the entire ecosystem.
+**See the risk. Move capital only inside your limits.**
 
-[Explore Docs](https://x402-docs.stacks-ai.app) • [Try Demo](https://x402.stacks-ai.app) • [View Gateway](https://gateway.stacks-ai.app)
+Bitrail is a Stacks-native risk intelligence and guarded capital-routing layer for productive Bitcoin — sBTC, stBTC, Zest lending positions, and Bitflow LP. It gives users and protocols a shared cross-protocol view of health, liquidation distance, and safe rebalancing so Bitcoin capital can move deeper into the Stacks ecosystem without opaque risk.
+
+<br />
+
+[Dashboard](#) · [SDK Docs](#sdk) · [Risk Model](RISK_MODEL.md) · [Contract Addresses](CONTRACT_ADDRESSES.md)
+
+<br />
 
 </div>
 
 ---
 
-## What We're Building
+## The Problem
 
-**The Stacks AI** is transforming how people interact with Bitcoin DeFi. Instead of navigating complex interfaces, users simply describe what they want to do. Our AI understands Bitcoin DeFi terminology and executes operations across multiple protocols through a single conversational interface.
+Bitcoin on Stacks can now earn and be deployed across multiple protocols simultaneously — staked as stBTC on StackingDAO, supplied as collateral on Zest, providing liquidity on Bitflow. Risk is no longer single-protocol. It is fragmented, cross-protocol, and invisible to the user.
+
+A user with stBTC collateral borrowing sBTC on Zest, while their stBTC yield fluctuates with Bitcoin Staking rewards, has no single view of their true liquidation distance. They are flying blind.
 
 ```
-User: "Swap 100 STX for ALEX on ALEX Protocol"
-AI: Executes multi-hop routing, finds best price, returns unsigned transaction
+User's actual exposure:
+  stBTC collateral on Zest   →   liquidation threshold: 80% LTV
+  sBTC debt on Zest          →   accruing interest
+  Bitflow LP position        →   impermanent loss not factored in
+  sBTC/stBTC ratio shifting  →   collateral value changing silently
+
+Existing tools show each of these in isolation.
+Bitrail shows the net risk picture — and acts on it safely.
 ```
 
-### Three Core Products
+---
 
-| Product | Description | Status |
-|---------|-------------|--------|
-| **Stacks AI Chat** | Natural language interface for Bitcoin DeFi | Live |
-| **MCP Server** | 144+ tools across 7 DeFi protocols | Production |
-| **stackai-x402** | HTTP 402 payments for AI agent tool calls | Live |
+## What Bitrail Is
+
+Bitrail is **infrastructure** — not a DEX, not a lending protocol, not a yield farm, not another portfolio tracker.
+
+It is three things:
+
+**1. Risk Intelligence**
+Aggregates positions across Zest, StackingDAO, and Bitflow. Computes a transparent health factor using a versioned, documented model (`bitrail-risk-v0.1`). Shows liquidation distance in %, USD, and BTC. Labels every assumption.
+
+**2. Alert Engine**
+Users set thresholds — `health < 1.3`, `liquidation within 10%`. Bitrail monitors every 5 minutes and fires webhooks or in-app alerts before danger.
+
+**3. Guarded Routing**
+Optional execution layer. The Bitrail router contract executes a capital action — repay debt, reduce borrow — only if the simulated post-action health factor meets the user's registered policy minimum. If the health check fails, the transaction does not execute. Fails closed, always.
 
 ---
 
 ## Architecture
 
-<div align="center">
-
-```mermaid
-graph TB
-    subgraph "User Interface"
-        A[Chat Interface]
-        B[Wallet Connection]
-    end
-
-    subgraph "AI Layer"
-        C[AI Agent Processing]
-        D[MCP Protocol]
-    end
-
-    subgraph "Payment Layer"
-        E[x402 Gateway]
-        F[Payment Verification]
-    end
-
-    subgraph "Protocol Layer"
-        G[144+ DeFi Tools]
-        H[Smart Contracts]
-    end
-
-    subgraph "Blockchain"
-        I[Stacks Network]
-        J[Bitcoin Security]
-    end
-
-    A --> C
-    B --> F
-    C --> D
-    D --> E
-    E --> F
-    F --> G
-    G --> H
-    H --> I
-    I --> J
-
-    style A fill:#5546ff
-    style C fill:#fc8d36
-    style E fill:#00d4aa
-    style G fill:#f7931a
-    style I fill:#f7931a
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         User Browser                            │
+│              Leather / Xverse wallet connect                    │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     Bitrail Web App                             │
+│                    (Next.js · lava/)                            │
+│                                                                 │
+│  Portfolio ─ Health Score ─ Positions ─ Alerts ─ Actions       │
+└────────────────────────────┬────────────────────────────────────┘
+                             │  proxied API calls
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                  Bitrail Indexer + API                          │
+│                   (Node.js · sbtc-pay/)                         │
+│                                                                 │
+│  /v1/bitrail/positions/:address                                 │
+│  /v1/bitrail/health/:address                                    │
+│  /v1/bitrail/alerts                                             │
+│                                                                 │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
+│  │ Zest Adapter │  │ StackingDAO  │  │   Risk Engine v0.1   │  │
+│  │              │  │   Adapter    │  │  healthFactor formula │  │
+│  └──────┬───────┘  └──────┬───────┘  └──────────────────────┘  │
+└─────────┼────────────────┼──────────────────────────────────────┘
+          │                │
+          ▼                ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    Stacks Mainnet                               │
+│                                                                 │
+│  Zest pool-borrow-v2-3      sBTC / stBTC token contracts        │
+│  StackingDAO data-stbtc-v1  Bitflow univ2-core                  │
+│  Hiro API                   Bitrail policy + router contracts   │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-</div>
-
 ---
 
-## Key Features
+## Health Score Model
 
-### Comprehensive Protocol Coverage
-
-Access 7 major Bitcoin DeFi protocols through a unified interface:
-
-- **ALEX Protocol** — AMM & Orderbook DEX with multi-hop routing (34 tools)
-- **Velar** — Multi-chain Bitcoin L2 DEX (18 tools)
-- **BitFlow** — Stable-focused DEX with concentrated liquidity (29 tools)
-- **Arkadiko** — Collateralized lending & USDA stablecoin (28 tools)
-- **Charisma** — Composable vaults & Blaze intent protocol (14 tools)
-- **Granite Finance** — Multi-collateral lending with sBTC (21 tools)
-- **Stacks Core** — Contracts, PoX stacking, tokens, NFTs (40+ tools)
-
-### Natural Language DeFi
-
-Transform conversational commands into blockchain operations:
+Model ID: `bitrail-risk-v0.1` — versioned, transparent, auditable.
 
 ```
-"Stack 10,000 STX for Bitcoin rewards"
-"Borrow 1000 USDA using STX as collateral"
-"Show me all liquidity pools on Velar"
-"What's my vault health factor on Arkadiko?"
-"Generate a SIP-010 token contract called MyToken"
+healthFactor = totalCollateralValueUSD / (totalDebtValueUSD / liquidationThreshold)
+
+status:
+  healthFactor > 1.5   →  SAFE    (green)
+  healthFactor 1.0–1.5 →  WATCH   (yellow)
+  healthFactor < 1.0   →  DANGER  (red, liquidatable)
+
+liquidationDistancePct = ((healthFactor - 1.0) / healthFactor) × 100
+liquidationDistanceBTC = (totalCollateralUSD - totalDebtUSD / threshold) / btcPriceUSD
 ```
 
-### HTTP 402 Payments
-
-Monetize AI tools with zero intermediaries:
-
-- **Pay-per-call** pricing for MCP tools
-- **STX, sBTC, USDCx** payment support
-- **Client-side signing** — private keys never leave your device
-- **Automatic retry** — transparent 402 payment handling
-- **No subscriptions** — pay only for what you use
-
-### Security First
-
-- Client-side wallet integration with Stacks Connect
-- No private key storage on servers
-- User confirmation required for all write operations
-- Network isolation (mainnet/testnet/devnet)
-- Transaction status tracking and confirmation
+Every score includes a visible `assumptions[]` array — users see exactly what was assumed, including price source, model limitations, and data freshness. See [RISK_MODEL.md](RISK_MODEL.md).
 
 ---
 
-## Repositories
+## SDK
 
-### Core Infrastructure
-
-| Repository | Description | Tech Stack |
-|------------|-------------|------------|
-| [**stacks-frontend**](https://github.com/TheStacksAI/stacks-frontend) | Chat-based UI for Bitcoin DeFi | Next.js 15, React 19, TypeScript, Vercel AI SDK |
-| [**stacks-mcp-server**](https://github.com/TheStacksAI/stacks-mcp-server) | MCP server with 144+ DeFi tools | Node.js, TypeScript, Stacks.js, MCP Protocol |
-| [**stackai-x402**](https://github.com/TheStacksAI/stackai-x402) | HTTP 402 payment gateway & SDK | TypeScript, Redis, Turbo monorepo |
-
-### Sub-Projects
-
-- **Gateway** — HTTP 402 payment proxy with auth & analytics
-- **SDK** — Client library for x402 payment handling
-- **Web Dashboard** — Agent marketplace & analytics
-- **Moltbook** — Autonomous social agent with content generation
-- **OpenAPI-MCP** — Convert any OpenAPI spec to MCP tools
-- **Docs** — Comprehensive documentation site
-
----
-
-## Use Cases
-
-<table>
-<tr>
-<td width="50%">
-
-### For DeFi Users
-- Trade across multiple DEXs with natural language
-- Manage lending positions conversationally
-- Stack STX for Bitcoin yields via chat
-- Track portfolio and positions in plain English
-- Deploy smart contracts without coding
-
-</td>
-<td width="50%">
-
-### For AI Developers
-- Integrate Bitcoin DeFi into AI agents
-- Monetize MCP tools with HTTP 402
-- Access 144+ production-ready tools
-- Build on standardized protocol (MCP)
-- Deploy on decentralized infrastructure
-
-</td>
-</tr>
-</table>
-
----
-
-## Why Stacks AI?
-
-| Feature | Traditional DeFi | Stacks AI |
-|---------|------------------|-----------|
-| **Interface** | Complex UI, multiple platforms | Natural language, single chat |
-| **Learning Curve** | Weeks of research | Instant, conversational |
-| **Protocol Access** | Visit each protocol separately | Unified interface to 7+ protocols |
-| **Smart Contracts** | Solidity expertise required | Generate via conversation |
-| **AI Integration** | Manual API integration | MCP standard, plug & play |
-| **Monetization** | Subscriptions, tokens | Pay-per-call, no intermediaries |
-
----
-
-## Statistics
-
-<div align="center">
-
-### **144+ Tools** • **7 Protocols** • **3 Networks** • **0 Mocks**
-
-| Metric | Value |
-|--------|-------|
-| **DeFi Protocols** | ALEX, Velar, BitFlow, Arkadiko, Charisma, Granite, Stacks Core |
-| **Total Tools** | 144+ production-ready MCP tools |
-| **Networks** | Mainnet, Testnet, Devnet (local) |
-| **Tool Categories** | Swaps, Lending, Stacking, NFTs, Contracts, Analytics |
-| **Payment Tokens** | STX, sBTC, USDCx |
-| **Architecture** | Zero mocks, real protocol integration |
-
-</div>
-
----
-
-## Quick Start
-
-### For Users
-
-1. **Visit** [x402.stacks-ai.app](https://x402.stacks-ai.app)
-2. **Connect** your Stacks wallet (Leather or Xverse)
-3. **Start chatting** with Bitcoin DeFi
-
-### For Developers
-
-```bash
-# Install SDK
-npm install stackai-x402
-
-# Create AI agent client with automatic payment handling
-import { createAgentClient, generateAgentWallet } from 'stackai-x402'
-
-const wallet = generateAgentWallet('mainnet')
-const client = createAgentClient(wallet.privateKey, 'mainnet')
-
-// Call tools - 402 payments handled automatically
-const response = await client.post('https://gateway.stacks-ai.app/mcp', {
-  jsonrpc: '2.0',
-  method: 'tools/call',
-  params: { name: 'swap-tokens', arguments: { amount: 100 } }
-})
-```
-
-### For Tool Providers
+Any protocol can consume Bitrail risk data in one line:
 
 ```typescript
-import { createAgent } from 'stackai-x402'
+import { getBitrailHealth } from '@bitrail/sdk';
 
-// Monetize your MCP tools
-const agent = await createAgent('https://gateway.stacks-ai.app', privateKey, {
-  name: 'My DeFi Agent',
-  description: 'Custom Bitcoin DeFi tools',
-  tools: [
-    { serverId: 'srv_123', toolName: 'my-tool', price: 0.01 }
-  ]
-})
+const health = await getBitrailHealth('SP2VCQJGH7PHP2DJK7Z0V48AGBHQAW3R3ZW1QF4N');
+
+console.log(health.healthFactor);        // 2.41
+console.log(health.status);              // 'safe'
+console.log(health.liquidationDistancePct); // 58.5
+console.log(health.modelId);             // 'bitrail-risk-v0.1'
+console.log(health.assumptions);         // ['spot price used', 'no slippage modeled', ...]
+```
+
+Full SDK reference:
+
+```typescript
+const client = new BitrailClient('https://api.bitrail.xyz');
+
+// Get health score
+const health = await client.getHealth(address);
+
+// List normalized positions across all protocols
+const positions = await client.listPositions(address);
+
+// Register an alert webhook
+await client.subscribeAlert({
+  address,
+  alertType: 'health_below',
+  threshold: 1.3,
+  webhookUrl: 'https://yourapp.com/bitrail-alert',
+});
 ```
 
 ---
 
-## Technology Stack
+## Integrations
+
+| Protocol | Data Read | Status |
+|---|---|---|
+| **Zest Protocol** | Supply, borrow, LTV, liquidation threshold | ✅ MVP |
+| **StackingDAO** | stBTC balance, sBTC/stBTC ratio | ✅ MVP |
+| **Bitflow** | LP positions (sBTC/USDCx, STX/USDCx) | 🔄 Post-MVP |
+| **Native sBTC** | Wallet balance | ✅ MVP |
+
+---
+
+## Smart Contracts
+
+Non-custodial by default. Minimal surface area.
+
+### `bitrail-policy.clar`
+User self-registers risk limits on-chain. Stores `max-ltv-bps` and `min-health-bps` per principal. No token approvals. No custody.
+
+### `bitrail-router.clar`
+Executes a capital action (e.g. repay Zest debt) only if the caller-provided post-action health factor meets the user's registered policy minimum. **Fails closed**: if the health check fails, no action executes — the transaction aborts.
+
+```clarity
+;; Router will NOT execute if expected post-health < your registered minimum
+(define-public (guarded-repay (market <market-trait>) (ft <ft-trait>) (amount uint) (expected-health-bps uint))
+  ...
+  (asserts! (>= expected-health-bps min-health) (err err-health-check-failed))
+  (try! (contract-call? market repay ft amount none))
+  (ok true))
+```
+
+---
+
+## Repo Structure
+
+```
+STACKS GRANT/
+├── lava/                   # Bitrail web app (Next.js 15)
+│   ├── app/dashboard/      # Portfolio, health, positions, alerts, actions
+│   ├── components/bitrail/ # HealthScoreWidget, PositionsTable, AlertCard
+│   └── stores/             # Wallet state (Leather/Xverse)
+│
+├── sbtc-pay/               # Bitrail indexer + API (Node.js)
+│   ├── src/lib/bitrail/    # Adapters, risk engine, alert engine
+│   ├── src/app/api/v1/bitrail/ # REST endpoints
+│   ├── contracts/          # bitrail-policy.clar, bitrail-router.clar
+│   └── packages/bitrail-sdk/   # @bitrail/sdk TypeScript package
+│
+└── StacksMCPServer/        # Protocol data layer (Zest, sBTC, Bitflow plugins)
+```
+
+---
+
+## Security
+
+- Never requests seed phrases or private keys
+- No unlimited token approvals in MVP
+- Router fails closed — health check failure aborts action
+- Smart contracts recommended for audit before large allowances
+- All APIs rate-limited
+- Clear disclaimers: not financial advice; scores can be wrong; verify on-chain
+
+---
+
+
+## Disclaimer
+
+> Bitrail health scores are computed from on-chain data using a documented model (`bitrail-risk-v0.1`). Scores can be wrong. Prices can be stale. Model assumptions are visible in every response. This is not financial advice. Always verify your position on-chain before taking action. Smart contracts have not been audited — use limited allowances and exercise caution.
+
+---
 
 <div align="center">
 
-| Layer | Technologies |
-|-------|--------------|
-| **Frontend** | Next.js 15, React 19, TypeScript, Tailwind CSS, Vercel AI SDK |
-| **Backend** | Node.js 20+, Express, Redis, TypeScript |
-| **Blockchain** | Stacks.js, Clarity, Hiro API, Bitcoin PoX |
-| **AI** | OpenAI GPT, Anthropic Claude, Vercel AI SDK, MCP Protocol |
-| **Protocols** | ALEX SDK, Velar SDK, BitFlow SDK, Protocol APIs |
-| **Payments** | HTTP 402, Stacks STX, sBTC, USDCx |
-| **Database** | Redis, PostgreSQL, Drizzle ORM |
-| **DevOps** | Turbo, pnpm, Docker, Vercel, Railway |
-
-</div>
-
----
-
-## Live Services
-
-| Service | URL | Description |
-|---------|-----|-------------|
-| **Main App** | [x402.stacks-ai.app](https://x402.stacks-ai.app) | Chat interface for Bitcoin DeFi |
-| **Gateway** | [gateway.stacks-ai.app](https://gateway.stacks-ai.app) | HTTP 402 payment proxy |
-| **Moltbook** | [moltbook.stacks-ai.app](https://moltbook.stacks-ai.app) | Autonomous social agent |
-| **OpenAPI MCP** | [openapi.stacks-ai.app](https://openapi.stacks-ai.app) | OpenAPI to MCP converter |
-| **Documentation** | [x402-docs.stacks-ai.app](https://x402-docs.stacks-ai.app) | Full documentation |
-
----
-
-## Contributing
-
-We welcome contributions from the community! Whether you're:
-
-- Reporting bugs
-- Suggesting features
-- Improving documentation
-- Submitting code
-- Writing tests
-
-Check out our repositories and open an issue or PR. All contributions require:
-
-- Tests passing
-- TypeScript type safety
-- Documentation updates
-- Code review approval
-
----
-
-## Resources
-
-<table>
-<tr>
-<td>
-
-### Documentation
-- [Getting Started Guide](https://x402-docs.stacks-ai.app)
-- [MCP Server Docs](https://github.com/TheStacksAI/stacks-mcp-server#readme)
-- [x402 SDK Reference](https://github.com/TheStacksAI/stackai-x402#readme)
-- [API Documentation](https://gateway.stacks-ai.app/docs)
-
-</td>
-<td>
-
-### Links
-- [Stacks Blockchain](https://www.stacks.co/)
-- [Model Context Protocol](https://modelcontextprotocol.io/)
-- [Bitcoin](https://bitcoin.org/)
-- [Hiro Platform](https://www.hiro.so/)
-
-</td>
-</tr>
-</table>
-
----
-
-## Roadmap
-
-- **Q2 2025** — MCP Server v1.0 with 144+ tools
-- **Q3 2025** — stackai-x402 payment protocol
-- **Q4 2025** — Chat interface & wallet integration
-- **Q1 2026** — Advanced agent marketplace
-- **Q2 2026** — Cross-chain protocol expansion
-- **Q3 2026** — Mobile applications (iOS/Android)
-- **Q4 2026** — Enterprise API & white-label solutions
-
----
-
-## License
-
-All projects are open source under the **MIT License**. See individual repository LICENSE files for details.
-
----
-
-## Community & Support
-
-<div align="center">
-
-### Join the conversation
-
-[![Twitter](https://img.shields.io/badge/Twitter-Follow-1DA1F2?style=for-the-badge&logo=twitter)](https://twitter.com/TheStacksAI)
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=for-the-badge&logo=discord)](https://discord.gg/stacksai)
-[![GitHub](https://img.shields.io/badge/GitHub-Star-black?style=for-the-badge&logo=github)](https://github.com/TheStacksAI)
-
-**Questions? Issues? Ideas?** Open an issue in the relevant repository or join our community channels.
-
----
-
-### Built by the Stacks AI team
-
-*Making Bitcoin DeFi accessible to everyone, one conversation at a time.*
+Built on Stacks · Secured by Bitcoin · Not financial advice
 
 </div>
